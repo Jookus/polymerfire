@@ -1,9 +1,10 @@
-import {  PolymerElement } from '../@polymer/polymer/polymer-element.js';
+import {  PolymerElement } from '@polymer/polymer/polymer-element.js';
+import { mixinBehaviors } from '@polymer/polymer/lib/legacy/class.js';
 import { FirebaseCommonBehavior } from './firebase-common-behavior.js';
 
 import './firebase-auth-script.js';
 
-class FirebaseAuth extends FirebaseCommonBehavior(PolymerElement) {
+class FirebaseAuth extends mixinBehaviors([FirebaseCommonBehavior],PolymerElement) {
   static get is() { return 'firebase-auth'; }
 
   static get properties () {

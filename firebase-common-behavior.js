@@ -5,9 +5,9 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file or at
 https://github.com/firebase/polymerfire/blob/master/LICENSE
 */
-import {  PolymerElement } from '@polymer/polymer/polymer-element.js';
+import '@polymer/polymer/polymer-legacy.js';
 
-import './firebase-app-script.js';
+import 'firebase/firebase-auth.js';
 
 import { AppNetworkStatusBehavior } from '@polymer/app-storage/app-network-status-behavior.js';
 

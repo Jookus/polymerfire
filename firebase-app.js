@@ -1,8 +1,4 @@
-
-
-
-import {  PolymerElement } from '../@polymer/polymer/polymer-element.js';
-// import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {  PolymerElement } from '@polymer/polymer/polymer-element.js';
   
 import { firebase } from '@firebase/app';
 
