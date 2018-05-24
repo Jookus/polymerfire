@@ -12,7 +12,7 @@
     "type": "git",
     "url": "git://github.com/Jookus/polymerfire"
   },
-  "version": "3.0.2",
+  "version": "3.0.3",
   "resolutions": {
     "inherits": "2.0.3",
     "samsam": "1.1.3",
