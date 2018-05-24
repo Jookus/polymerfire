@@ -38,148 +38,146 @@ Polymer({
     }
   },
 
-  dataChanged: function (newData, oldData) {
+  dataChanged (newData, oldData) {
     // do something when the query returns values
   }
 });
 </script>
 ```
 */
-/*
-  FIXME(polymer-modulizer): the above comments were extracted
-  from HTML and may be out of place here. Review them and
-  then delete this comment!
-*/
-import '@polymer/polymer/polymer-legacy.js';
 
-import { FirebaseDatabaseBehavior } from './firebase-database-behavior.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+// import {Polymer} from '../@polymer/polymer/lib/legacy/polymer-fn.js';
+import {  PolymerElement } from '../@polymer/polymer/polymer-element.js';
+import './firebase-database-behavior.js';
 
-Polymer({
-  is: 'firebase-query',
 
-  behaviors: [
-    FirebaseDatabaseBehavior
-  ],
+  class FirebaseQuery extends PolymerElement {
+    static get is() { return 'firebase-query'; }
+    // behaviors: [
+    //   Polymer.FirebaseDatabaseBehavior
+    // ],
 
-  properties: {
-    /**
-     * [`firebase.database.Query`](https://firebase.google.com/docs/reference/js/firebase.database.Query#property)
-     * object computed by the following parameters.
-     */
-    query: {
-      type: Object,
-      computed: '__computeQuery(ref, orderByChild, orderByValue, limitToFirst, limitToLast, startAt, endAt, equalTo)',
-      observer: '__queryChanged'
-    },
+    static get properties () {
+      return {
 
-    /**
-     * The child key of each query result to order the query by.
-     *
-     * Changing this value generates a new `query` ordered by the
-     * specified child key.
-     */
-    orderByChild: {
-      type: String,
-      value: ''
-    },
+        /**
+         * [`firebase.database.Query`](https://firebase.google.com/docs/reference/js/firebase.database.Query#property)
+         * object computed by the following parameters.
+         */
+        query: {
+          type: Object,
+          computed: '__computeQuery(ref, orderByChild, orderByValue, limitToFirst, limitToLast, startAt, endAt, equalTo)',
+          observer: '__queryChanged'
+        },
 
-    /**
-     * Order this query by values. This is only applicable to leaf node queries
-     * against data structures such as `{a: 1, b: 2, c: 3}`.
-     */
-    orderByValue: {
-      type: Boolean,
-      value: false
-    },
+        /**
+         * The child key of each query result to order the query by.
+         *
+         * Changing this value generates a new `query` ordered by the
+         * specified child key.
+         */
+        orderByChild: {
+          type: String,
+          value: ''
+        },
 
-    /**
-     * The value to start at in the query.
-     *
-     * Changing this value generates a new `query` with the specified
-     * starting point. The generated `query` includes children which match
-     * the specified starting point.
-     */
-    startAt: {
-      type: String,
-      value: ''
-    },
+        /**
+         * Order this query by values. This is only applicable to leaf node queries
+         * against data structures such as `{a: 1, b: 2, c: 3}`.
+         */
+        orderByValue: {
+          type: Boolean,
+          value: false
+        },
 
-    /**
-     * The value to end at in the query.
-     *
-     * Changing this value generates a new `query` with the specified
-     * ending point. The generated `query` includes children which match
-     * the specified ending point.
-     */
-    endAt: {
-      type: String,
-      value: ''
-    },
+        /**
+         * The value to start at in the query.
+         *
+         * Changing this value generates a new `query` with the specified
+         * starting point. The generated `query` includes children which match
+         * the specified starting point.
+         */
+        startAt: {
+          type: String,
+          value: ''
+        },
 
-    /**
-     * Specifies a child-key value that must be matched for each candidate result.
-     *
-     * Changing this value generates a new `query` which includes children
-     * which match the specified value.
-     */
-    equalTo: {
-      type: Object,
-      value: null
-    },
+        /**
+         * The value to end at in the query.
+         *
+         * Changing this value generates a new `query` with the specified
+         * ending point. The generated `query` includes children which match
+         * the specified ending point.
+         */
+        endAt: {
+          type: String,
+          value: ''
+        },
 
-    /**
-     * The maximum number of nodes to include in the query.
-     *
-     * Changing this value generates a new `query` limited to the first
-     * number of children.
-     */
-    limitToFirst: {
-      type: Number,
-      value: 0
-    },
+        /**
+         * Specifies a child-key value that must be matched for each candidate result.
+         *
+         * Changing this value generates a new `query` which includes children
+         * which match the specified value.
+         */
+        equalTo: {
+          type: Object,
+          value: null
+        },
 
-    /**
-     * The maximum number of nodes to include in the query.
-     *
-     * Changing this value generates a new `query` limited to the last
-     * number of children.
-     */
-    limitToLast: {
-      type: Number,
-      value: 0
+        /**
+         * The maximum number of nodes to include in the query.
+         *
+         * Changing this value generates a new `query` limited to the first
+         * number of children.
+         */
+        limitToFirst: {
+          type: Number,
+          value: 0
+        },
+
+        /**
+         * The maximum number of nodes to include in the query.
+         *
+         * Changing this value generates a new `query` limited to the last
+         * number of children.
+         */
+        limitToLast: {
+          type: Number,
+          value: 0
+        }
     }
-  },
+  }
 
-  created: function() {
+  created() {
     this.__map = {};
-  },
+  }
 
-  attached: function() {
+  attached() {
     this.__queryChanged(this.query, this.query);
-  },
+  }
 
-  detached: function() {
+  detached() {
     if (this.query == null) {
       return;
     }
 
     this.__queryChanged(null, this.query);
-  },
+  }
 
-  child: function(key) {
+  child(key) {
     return this.__map[key];
-  },
+  }
 
   get isNew() {
     return this.disabled || !this.__pathReady(this.path);
-  },
+  }
 
   get zeroValue() {
     return [];
-  },
+  }
 
-  memoryPathToStoragePath: function(path) {
+  memoryPathToStoragePath(path) {
     var storagePath = this.path;
 
     if (path !== 'data') {
@@ -194,9 +192,9 @@ Polymer({
     }
 
     return storagePath;
-  },
+  }
 
-  storagePathToMemoryPath: function(storagePath) {
+  storagePathToMemoryPath(storagePath) {
     var path = 'data';
 
     if (storagePath !== this.path) {
@@ -212,9 +210,9 @@ Polymer({
     }
 
     return path;
-  },
+  }
 
-  setStoredValue: function(storagePath, value) {
+  setStoredValue(storagePath, value) {
     if (storagePath === this.path || /\$key$/.test(storagePath)) {
       return Promise.resolve();
     } else if (/\/\$val$/.test(storagePath)) {
@@ -222,16 +220,16 @@ Polymer({
     } else {
       return this._setFirebaseValue(storagePath, value);
     }
-  },
+  }
 
-  _propertyToKey: function(property) {
+  _propertyToKey(property) {
     var index = window.parseInt(property, 10);
     if (index != null && !isNaN(index)) {
       return this.data[index].$key;
     }
-  },
+  }
 
-  __computeQuery: function(ref, orderByChild, orderByValue, limitToFirst, limitToLast, startAt, endAt, equalTo) {
+  __computeQuery(ref, orderByChild, orderByValue, limitToFirst, limitToLast, startAt, endAt, equalTo) {
     if (ref == null) {
       return null;
     }
@@ -265,9 +263,9 @@ Polymer({
     }
 
     return query;
-  },
+  }
 
-  __pathChanged: function(path, oldPath) {
+  __pathChanged(path, oldPath) {
     // we only need to reset the data if the path is null (will also trigged when this element initiates)
     // When path changes and is not null, it triggers a ref change (via __computeRef(db,path)), which then triggers a __queryChanged setting data to zeroValue
 
@@ -276,9 +274,9 @@ Polymer({
         this.data = this.zeroValue;
       });
     }
-  },
+  }
 
-  __queryChanged: function(query, oldQuery) {
+  __queryChanged(query, oldQuery) {
     if (oldQuery) {
       oldQuery.off('value', this.__onFirebaseValue, this);
       oldQuery.off('child_added', this.__onFirebaseChildAdded, this);
@@ -289,7 +287,6 @@ Polymer({
       this.syncToMemory(function() {
         this.__map = {};
         this.set('data', this.zeroValue);
-        this._setExists(null);
       });
     }
 
@@ -306,18 +303,17 @@ Polymer({
         query.off('child_changed', this.__onFirebaseChildChanged, this);
         query.off('child_moved', this.__onFirebaseChildMoved, this);
       }
-      
-      this._setExists(null);   
-      this._onOnce = true;            
-      this._query = query;
+
+      this._onOnce = true;
+      this._query = query
 
       // does the on-value first
-      query.off('value', this.__onFirebaseValue, this);
-      query.on('value', this.__onFirebaseValue, this.__onError, this);
+      query.off('value', this.__onFirebaseValue, this)
+      query.on('value', this.__onFirebaseValue, this.__onError, this)
     }
-  },
+  }
 
-  __indexFromKey: function(key) {
+  __indexFromKey(key) {
     if (key != null) {
       for (var i = 0; i < this.data.length; i++) {
         if (this.data[i].$key === key) {
@@ -326,9 +322,9 @@ Polymer({
       }
     }
     return -1;
-  },
+  }
 
-  __onFirebaseValue: function(snapshot) {
+  __onFirebaseValue(snapshot) {
     if (snapshot.hasChildren()) {
       var data = [];
       snapshot.forEach(function(childSnapshot) {
@@ -340,7 +336,6 @@ Polymer({
       }.bind(this))
 
       this.set('data', data);
-      this._setExists(true);
     }
 
     const query = this.query
@@ -357,9 +352,9 @@ Polymer({
     query.on('child_removed', this.__onFirebaseChildRemoved, this.__onError, this);
     query.on('child_changed', this.__onFirebaseChildChanged, this.__onError, this);
     query.on('child_moved', this.__onFirebaseChildMoved, this.__onError, this);
-  },
+  }
 
-  __onFirebaseChildAdded: function(snapshot, previousChildKey) {
+  __onFirebaseChildAdded(snapshot, previousChildKey) {
     var key = snapshot.key;
 
     // check if the key-value pair already exists
@@ -374,10 +369,9 @@ Polymer({
 
     this.__map[key] = value;
     this.splice('data', previousChildIndex + 1, 0, value);
-    this._setExists(true);
-  },
+  }
 
-  __onFirebaseChildRemoved: function(snapshot) {
+  __onFirebaseChildRemoved(snapshot) {
 
     var key = snapshot.key;
     var value = this.__map[key];
@@ -394,14 +388,11 @@ Polymer({
             this.splice('data', this.__indexFromKey(key), 1);
           }
         });
-        if (this.data.length === 0) {
-          this._setExists(false);
-        }
       });
     }
-  },
+  }
 
-  __onFirebaseChildChanged: function(snapshot) {
+  __onFirebaseChildChanged(snapshot) {
     var key = snapshot.key;
     var prev = this.__map[key];
 
@@ -432,9 +423,9 @@ Polymer({
         });
       });
     }
-  },
+  }
 
-  __onFirebaseChildMoved: function(snapshot, previousChildKey) {
+  __onFirebaseChildMoved(snapshot, previousChildKey) {
     var key = snapshot.key;
     var value = this.__map[key];
     var targetIndex = previousChildKey ? this.__indexFromKey(previousChildKey) + 1 : 0;
@@ -455,9 +446,9 @@ Polymer({
         });
       });
     }
-  },
+  }
 
-  __valueWithKey: function(key, value) {
+  __valueWithKey(key, value) {
     var leaf = typeof value !== 'object';
 
     if (leaf) {
@@ -466,12 +457,16 @@ Polymer({
       value.$key = key;
     }
     return value;
-  },
+  }
 
-  __snapshotToValue: function(snapshot) {
+  __snapshotToValue(snapshot) {
     var key = snapshot.key;
     var value = snapshot.val();
 
     return this.__valueWithKey(key, value);
   }
-});
+}
+
+
+// Register the element with the browser.
+customElements.define('firebase-query', FirebaseQuery);

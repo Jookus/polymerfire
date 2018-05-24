@@ -5,15 +5,33 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file or at
 https://github.com/firebase/polymerfire/blob/master/LICENSE
 */
-import '@polymer/polymer/polymer-legacy.js';
+// import {Polymer, AppStorageBehavior} from '../@polymer/polymer/lib/legacy/polymer-fn.js';
+import {PolymerElement} from '../@polymer/polymer/polymer-element.js';
+import { AppStorageBehavior } from '../@polymer/app-storage/app-storage-behavior.js';
+import { firebase } from '../@firebase/app';
 
-import { AppStorageBehavior } from '@polymer/app-storage/app-storage-behavior.js';
-import { FirebaseCommonBehavior } from './firebase-common-behavior.js';
+// import { Deferred } from '@firebase/util';
+import './firebase-common-behavior.js';
 import './firebase-database-script.js';
 
 /** @polymerBehavior Polymer.FirebaseDatabaseBehavior */
-export const FirebaseDatabaseBehaviorImpl = {
-  properties: {
+
+
+// Polymer.FirebaseDatabaseBehaviorImpl = {
+
+ class FirebaseDatabaseBehavior extends PolymerElement {
+    static get is() { return 'firebase-app'; }
+    // static get template () {
+    //   // Template getter must return an instance of HTMLTemplateElement.
+    //   // The html helper function makes this easy.
+    //   return html `
+    //
+    //   `;
+    // }
+
+    static get  properties () {
+      return {
+
     db: {
       type: Object,
       computed: '__computeDb(app)'
@@ -40,104 +58,92 @@ export const FirebaseDatabaseBehaviorImpl = {
      * in situations where elements are loaded into the DOM before they're
      * ready to be activated (e.g. navigation, initialization scenarios).
      */
-    disabled: {
-      type: Boolean,
-      value: false
-    },
-
-    /**
-     * `exists` is set to `true` when the data actually exists for the 
-     * specified path; `false` otherwise. 
-     * When we are unable to determine whether data exists or not 
-     * (e.g. first round trip to the server not yet performed) the value 
-     * is `null`
-     */
-    exists: {
-      type: Boolean,
-      notify: true,
-      value: null, 
-      readOnly: true,
-      reflectToAttribute: true
-    },
-
-  },
-
-  observers: [
+      disabled: {
+        type: Boolean,
+        value: false
+      }
+    }
+  }
+  static get observers() {
+    return    [
     '__onlineChanged(online)'
-  ],
+  ];
+}
 
   /**
    * Set the firebase value.
    * @return {!firebase.Promise<void>}
    */
-  _setFirebaseValue: function(path, value) {
-    this._log('Setting Firebase value at', path, 'to', value)
+  _setFirebaseValue(path, value) {
+    _log('Setting Firebase value at', path, 'to', value)
     var key = value && value.$key;
     var leaf = value && value.hasOwnProperty('$val');
     if (key) {
       value.$key = null;
     }
-    var result = this.db.ref(path).set(leaf ? value.$val : value);
+    var result = db.ref(path).set(leaf ? value.$val : value);
     if (key) {
       value.$key = key;
     }
     return result;
-  },
+  }
 
-  __computeDb: function(app) {
+  __computeDb(app) {
     return app ? app.database() : null;
-  },
+  }
 
-  __computeRef: function(db, path) {
+  __computeRef(db, path) {
     if (db == null ||
         path == null ||
-        !this.__pathReady(path) ||
-        this.disabled) {
+        !__pathReady(path) ||
+        disabled) {
       return null;
     }
 
     return db.ref(path);
-  },
+  }
 
-  /**
-   * Override this method if needed.
-   * e.g. to detach or attach listeners.
-   */
-  __refChanged: function(ref, oldRef){
+
+  __refChanged(ref, oldRef){
     return;
-  },
+  }
 
-  __pathChanged: function(path, oldPath) {
-    this._setExists(null);
 
-    if (!this.disabled && !this.valueIsEmpty(this.data)) {
-      this.syncToMemory(function() {
-        this.data = this.zeroValue;
-        this.__needSetData = true;
+  __pathChanged(path, oldPath) {
+
+    if (
+      !disabled && !isEmpty(data)
+    ) {
+      syncToMemory(function() {
+        data = zeroValue;
+        __needSetData = true;
       });
     }
-  },
+  }
 
-  __pathReady: function(path) {
+  __pathReady(path) {
     return path && path.split('/').slice(1).indexOf('') < 0;
-  },
+  }
 
-  __onlineChanged: function(online) {
-    if (!this.ref) {
+  __onlineChanged(online) {
+    if (!ref) {
       return;
     }
 
     if (online) {
-      this.db.goOnline();
+      db.goOnline();
     } else {
-      this.db.goOffline();
+      db.goOffline();
     }
   }
-};
+}
 
-/** @polymerBehavior */
-export const FirebaseDatabaseBehavior = [
-  AppStorageBehavior,
-  FirebaseCommonBehavior,
-  FirebaseDatabaseBehaviorImpl
-];
+
+
+
+// /** @polymerBehavior */
+// Polymer.FirebaseDatabaseBehavior = [
+//   Polymer.AppStorageBehavior,
+//   Polymer.FirebaseCommonBehavior,
+//   Polymer.FirebaseDatabaseBehaviorImpl
+// ];

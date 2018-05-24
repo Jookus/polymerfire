@@ -5,10 +5,8 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file or at
 https://github.com/firebase/polymerfire/blob/master/LICENSE
 */
-import '@polymer/polymer/polymer-legacy.js';
-
-import { FirebaseStorageBehavior } from './firebase-storage-behavior.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import './firebase-storage-behavior.js';
 
 /**
 * The firebase-storage-ref element is an easy way to interact with a firebase
@@ -70,10 +68,10 @@ Polymer({
   },
 
   behaviors: [
-    FirebaseStorageBehavior
+    Polymer.FirebaseStorageBehavior
   ],
-  
-  
+
+
   observers: [
     '__pathChanged(path, storage)'
   ],
@@ -91,7 +89,7 @@ Polymer({
   get zeroValue() {
     return [];
   },
-  
+
   __pathChanged: function(path) {
     if (this.storage) {
       this.getDownloadURL(path).then(function(downloadUrl) {
@@ -105,7 +103,7 @@ Polymer({
       }.bind(this)).catch(function(error) {
         this.fire('error', error, { bubble: false});
       }.bind(this));
-      
+
       this.storageUri = this.toGsString(path);
     }
   },

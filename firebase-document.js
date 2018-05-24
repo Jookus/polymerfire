@@ -5,10 +5,8 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file or at
 https://github.com/firebase/polymerfire/blob/master/LICENSE
 */
-import '@polymer/polymer/polymer-legacy.js';
-
-import { FirebaseDatabaseBehavior } from './firebase-database-behavior.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {Polymer} from '../@polymer/polymer/lib/legacy/polymer-fn.js';
+import './firebase-database-behavior.js';
 
 /**
  * The firebase-document element is an easy way to interact with a firebase
@@ -34,7 +32,7 @@ Polymer({
   is: 'firebase-document',
 
   behaviors: [
-    FirebaseDatabaseBehavior
+    Polymer.FirebaseDatabaseBehavior
   ],
 
   attached: function() {
@@ -159,13 +157,11 @@ Polymer({
 
   __onFirebaseValue: function(snapshot) {
     var value = snapshot.val();
-    var exists = true;
 
     if (value == null) {
       value = this.zeroValue;
       this.__needSetData = true;
-       exists = false;
-    } 
+    }
 
     if (!this.isNew) {
       this.async(function() {
@@ -189,10 +185,6 @@ Polymer({
             }
           }
         });
-        this._setExists(exists);
-        if(!exists) {
-          this.fire('empty-result');
-        }
       });
     }
   }

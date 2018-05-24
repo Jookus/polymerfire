@@ -58,16 +58,11 @@ To use a different service worker than the default, you will need to add the
 `custom-sw` attribute to your `<firebase-messaging>` element, and then explicitly
 call `.activate()` on the element once you've
 */
-/*
-  FIXME(polymer-modulizer): the above comments were extracted
-  from HTML and may be out of place here. Review them and
-  then delete this comment!
-*/
-import '@polymer/polymer/polymer-legacy.js';
 
-import { FirebaseCommonBehavior } from './firebase-common-behavior.js';
+import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import './firebase-common-behavior.js';
+
 import './firebase-messaging-script.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 var stateMap = {};
 
 /**
@@ -131,7 +126,7 @@ Polymer({
   is: 'firebase-messaging',
 
   behaviors: [
-    FirebaseCommonBehavior,
+    Polymer.FirebaseCommonBehavior,
   ],
 
   properties: {

@@ -5,10 +5,8 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file or at
 https://github.com/firebase/polymerfire/blob/master/LICENSE
 */
-import '@polymer/polymer/polymer-legacy.js';
-
-import { FirebaseStorageBehavior } from './firebase-storage-behavior.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import './firebase-storage-behavior.js';
 
 /**
 * The firebase-storage-multiupload element is an easy way to upload files by
@@ -51,7 +49,7 @@ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 *   file-task
 *
 *     <firebase-storage-upload-task
-*       task="[[item]]"
+*       task="[[item]]""
 *       bytes-transferred="{{bytesTransferred}}"
 *       total-bytes="{{totalBytes}}"
 *       state="{{state}}"
@@ -72,7 +70,7 @@ import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 *
 *     <template is="dom-repeat" items="[[uploadTasks]]">
 *       <firebase-storage-upload-task
-*         task="[[item]]"
+*         task="[[item]]""
 *         bytes-transferred="{{item.bytesTransferred}}"
 *         total-bytes="{{item.totalBytes}}"
 *         state="{{item.state}}"
@@ -118,7 +116,7 @@ Polymer({
   },
 
   behaviors: [
-    FirebaseStorageBehavior
+    Polymer.FirebaseStorageBehavior
   ],
 
   /**
@@ -143,7 +141,7 @@ Polymer({
   * Upload files, update the path and write this.files to that new location.
   *
   * Important note: `this.path` is updated asynchronously.
-  * 
+  *
   * @param {Array} Array of Files to be uploaded
   * @param {string} path of the new firebase location to write to.
   * @return {Promise} A promise that resolves once this.files has been

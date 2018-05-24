@@ -1,75 +1,18 @@
-/**
-@license
-Copyright 2016 Google Inc. All Rights Reserved.
-Use of this source code is governed by a BSD-style
-license that can be found in the LICENSE file or at
-https://github.com/firebase/polymerfire/blob/master/LICENSE
-*/
-/*
-`firebase-auth` is a wrapper around the Firebase authentication API. It notifies
-successful authentication, provides user information, and handles different
-types of authentication including anonymous, email / password, and several OAuth
-workflows.
 
-Example Usage:
-```html
-<firebase-app auth-domain="polymerfire-test.firebaseapp.com"
-  database-url="https://polymerfire-test.firebaseio.com/"
-  api-key="AIzaSyDTP-eiQezleFsV2WddFBAhF_WEzx_8v_g">
-</firebase-app>
-<firebase-auth id="auth" user="{{user}}" provider="google" on-error="handleError">
-</firebase-auth>
-```
 
-The `firebase-app` element initializes `app` in `firebase-auth` (see
-`firebase-app` documentation for more information), but an app name can simply
-be specified at `firebase-auth`'s `app-name` property instead.
 
-JavaScript sign-in calls can then be made to the `firebase-auth` object to
-attempt authentication, e.g.:
-
-```javascript
-this.$.auth.signInWithPopup()
-    .then(function(response) {// optionally handle a successful login})
-    .catch(function(error) {// unsuccessful authentication response here});
-```
-
-This popup sign-in will then attempt to sign in using Google as an OAuth
-provider since there was no provider argument specified and since `"google"` was
-defined as the default provider.
-
-The `user` property will automatically be populated if an active session is
-available, so handling the resolved promise of sign-in methods is optional.
-
-It's important to note that if you're using a Service Worker, and hosting on
-Firebase, you should let urls that contain `/__/` go through to the network,
-rather than have the Service Worker attempt to serve something from the cache.
-The `__` namespace is reserved by Firebase and intercepting it will cause the
-OAuth sign-in flow to break.
-
-If you are self-deploying your app to some non-Firebase domain, this shouldn't
-be a problem.
-*/
-/*
-  FIXME(polymer-modulizer): the above comments were extracted
-  from HTML and may be out of place here. Review them and
-  then delete this comment!
-*/
-import '@polymer/polymer/polymer-legacy.js';
-
+import {Polymer} from '../@polymer/polymer/lib/legacy/polymer-fn.js';
+import {  PolymerElement } from '../@polymer/polymer/polymer-element.js';
 import { FirebaseCommonBehavior } from './firebase-common-behavior.js';
+
 import './firebase-auth-script.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
 
-Polymer({
+class FirebaseAuth extends FirebaseCommonBehavior(PolymerElement) {
+  static get is() { return 'firebase-auth'; }
 
-  is: 'firebase-auth',
+  static get properties () {
+    return {
 
-  behaviors: [
-    FirebaseCommonBehavior
-  ],
-
-  properties: {
     /**
      * [`firebase.Auth`](https://firebase.google.com/docs/reference/js/firebase.auth.Auth) service interface.
      */
@@ -133,44 +76,45 @@ Polymer({
       reflectToAttribute: true
     }
 
-  },
+    }
+  }
 
   /**
    * Authenticates a Firebase client using a new, temporary guest account.
    *
    * @return {Promise} Promise that handles success and failure.
    */
-  signInAnonymously: function() {
+  signInAnonymously() {
     if (!this.auth) {
       return Promise.reject('No app configured for firebase-auth!');
     }
 
     return this._handleSignIn(this.auth.signInAnonymously());
-  },
+  }
 
   /**
    * Authenticates a Firebase client using a custom JSON Web Token.
    *
    * @return {Promise} Promise that handles success and failure.
    */
-  signInWithCustomToken: function(token) {
+  signInWithCustomToken(token) {
     if (!this.auth) {
       return Promise.reject('No app configured for firebase-auth!');
     }
     return this._handleSignIn(this.auth.signInWithCustomToken(token));
-  },
+  }
 
   /**
    * Authenticates a Firebase client using an oauth id_token.
    *
    * @return {Promise} Promise that handles success and failure.
    */
-  signInWithCredential: function(credential) {
+  signInWithCredential(credential) {
     if (!this.auth) {
       return Promise.reject('No app configured for firebase-auth!');
     }
     return this._handleSignIn(this.auth.signInWithCredential(credential));
-  },
+  }
 
   /**
    * Authenticates a Firebase client using a popup-based OAuth flow.
@@ -181,9 +125,9 @@ Polymer({
    * for supported providers).
    * @return {Promise} Promise that handles success and failure.
    */
-  signInWithPopup: function(provider) {
+  signInWithPopup(provider) {
     return this._attemptProviderSignIn(this._normalizeProvider(provider), this.auth.signInWithPopup);
-  },
+  }
 
   /**
    * Authenticates a firebase client using a redirect-based OAuth flow.
@@ -197,9 +141,9 @@ Polymer({
    * of the auth flow, but it can be used to handle errors that happen
    * before the redirect).
    */
-  signInWithRedirect: function(provider) {
+  signInWithRedirect(provider) {
     return this._attemptProviderSignIn(this._normalizeProvider(provider), this.auth.signInWithRedirect);
-  },
+  }
 
   /**
    * Authenticates a Firebase client using an email / password combination.
@@ -208,9 +152,9 @@ Polymer({
    * @param  {!String} password Password corresponding to the user account.
    * @return {Promise} Promise that handles success and failure.
    */
-  signInWithEmailAndPassword: function(email, password) {
+  signInWithEmailAndPassword(email, password) {
     return this._handleSignIn(this.auth.signInWithEmailAndPassword(email, password));
-  },
+  }
 
   /**
    * Creates a new user account using an email / password combination.
@@ -219,9 +163,9 @@ Polymer({
    * @param  {!String} password Password corresponding to the user account.
    * @return {Promise} Promise that handles success and failure.
    */
-  createUserWithEmailAndPassword: function(email, password) {
+  createUserWithEmailAndPassword(email, password) {
     return this._handleSignIn(this.auth.createUserWithEmailAndPassword(email, password));
-  },
+  }
 
   /**
    * Sends a password reset email to the given email address.
@@ -229,24 +173,24 @@ Polymer({
    * @param  {!String} email Email address corresponding to the user account.
    * @return {Promise} Promise that handles success and failure.
    */
-  sendPasswordResetEmail: function(email) {
+  sendPasswordResetEmail(email) {
     return this._handleSignIn(this.auth.sendPasswordResetEmail(email));
-  },
-  
+  }
+
   /**
    * Unauthenticates a Firebase client.
    *
    * @return {Promise} Promise that handles success and failure.
    */
-  signOut: function() {
+  signOut() {
     if (!this.auth) {
       return Promise.reject('No app configured for auth!');
     }
 
     return this.auth.signOut();
-  },
+  }
 
-  _attemptProviderSignIn: function(provider, method) {
+  _attemptProviderSignIn(provider, method) {
     provider = provider || this._providerFromName(this.provider);
     if (!provider) {
       return Promise.reject('Must supply a provider for popup sign in.');
@@ -256,9 +200,9 @@ Polymer({
     }
 
     return this._handleSignIn(method.call(this.auth, provider));
-  },
+  }
 
-  _providerFromName: function(name) {
+  _providerFromName(name) {
     switch (name) {
       case 'facebook': return new firebase.auth.FacebookAuthProvider();
       case 'github': return new firebase.auth.GithubAuthProvider();
@@ -266,31 +210,31 @@ Polymer({
       case 'twitter': return new firebase.auth.TwitterAuthProvider();
       default: this.fire('error', 'Unrecognized firebase-auth provider "' + name + '"');
     }
-  },
+  }
 
-  _normalizeProvider: function(provider) {
+  _normalizeProvider(provider) {
     if (typeof provider === 'string') {
       return this._providerFromName(provider);
     }
     return provider;
-  },
+  }
 
-  _handleSignIn: function(promise) {
+  _handleSignIn(promise) {
     return promise.catch(function(err) {
       this.fire('error', err);
       throw err;
     }.bind(this));
-  },
+  }
 
-  _computeSignedIn: function(user) {
+  _computeSignedIn(user) {
     return !!user;
-  },
+  }
 
-  _computeAuth: function(app) {
+  _computeAuth(app) {
     return this.app.auth();
-  },
+  }
 
-  __authChanged: function(auth, oldAuth) {
+  __authChanged(auth, oldAuth) {
     this._setStatusKnown(false);
     if (oldAuth !== auth && this._unsubscribe) {
       this._unsubscribe();
@@ -306,4 +250,8 @@ Polymer({
       }.bind(this));
     }
   }
-});
+}
+
+
+// Register the element with the browser.
+customElements.define('firebase-auth', FirebaseAuth);

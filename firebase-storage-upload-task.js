@@ -5,10 +5,8 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file or at
 https://github.com/firebase/polymerfire/blob/master/LICENSE
 */
-import '@polymer/polymer/polymer-legacy.js';
-
-import { FirebaseStorageBehavior } from './firebase-storage-behavior.js';
-import { Polymer } from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import './firebase-storage-behavior.js';
 
 /**
 * The firebase-storage-upload-task element is an easy way to track upload tasks made
@@ -106,7 +104,7 @@ Polymer({
   },
 
   behaviors: [
-    FirebaseStorageBehavior
+    Polymer.FirebaseStorageBehavior
   ],
 
   /**

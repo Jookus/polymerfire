@@ -5,13 +5,13 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file or at
 https://github.com/firebase/polymerfire/blob/master/LICENSE
 */
-import '@polymer/polymer/polymer-legacy.js';
+import {Polymer} from '@polymer/polymer/lib/legacy/polymer-fn.js';
+import './firebase-common-behavior.js';
 
-import { FirebaseCommonBehavior } from './firebase-common-behavior.js';
 import './firebase-storage-script.js';
 
 /** @polymerBehavior Polymer.FirebaseStorageBehavior */
-export const FirebaseStorageBehaviorImpl = {
+Polymer.FirebaseStorageBehaviorImpl = {
   properties: {
     /**
       * Firebase storage instance
@@ -107,7 +107,7 @@ export const FirebaseStorageBehaviorImpl = {
 };
 
 /** @polymerBehavior */
-export const FirebaseStorageBehavior = [
-  FirebaseCommonBehavior,
-  FirebaseStorageBehaviorImpl
+Polymer.FirebaseStorageBehavior = [
+  Polymer.FirebaseCommonBehavior,
+  Polymer.FirebaseStorageBehaviorImpl
 ];
