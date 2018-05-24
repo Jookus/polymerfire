@@ -12,8 +12,7 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
     <title>firebase-messaging demo</title>
     <link rel="manifest" href="manifest.json">
     <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="../firebase-messaging.html">
-    <style>
+    <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script> <style>
       body { font-family: Roboto, sans-serif; padding: 0; margin: 0 }
 
       h1 {
@@ -58,29 +57,26 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
       });
 
       window.addEventListener('WebComponentsReady', function() {
-        if (navigator.serviceWorker) {
-          navigator.serviceWorker.register('firebase-messaging-sw.js').then(function(sw) {
-            var app = document.getElementById('app');
+    <script type="module">
+import '../firebase-messaging.js';
+import { PolymerElement } from '@polymer/polymer/polymer-element.js';
+firebase.initializeApp({
+  messagingSenderId: '153517668099'
+});
 
-            // Polymer 2.0 compat
-            if (Polymer.Element) {
-              app = app.parentNode;
-            }
+if (navigator.serviceWorker) {
+  navigator.serviceWorker.register('firebase-messaging-sw.js').then(function(sw) {
+    var app = document.getElementById('app');
 
-            app.$.messaging.activate(sw);
-          });
-        }
-      });
-    </script>
-    <h1>firebase-messaging demo</h1>
-    <p>This demo will allow you to request notification permissions and obtain an instance token.
-    To actually test receipt of push messages, you will need to clone the demo and modify the
-    <code>messagingSenderId</code> in this file and in <code>firebase-messaging-sw.js</code>
-    in this directory.</p>
-    <dom-bind>
-      <template is="dom-bind" id="app">
-        <firebase-messaging id="messaging"
-          active="{{active}}"
+    // Polymer 2.0 compat
+    if (PolymerElement) {
+      app = app.parentNode;
+    }
+
+    app.$.messaging.activate(sw);
+  });
+}
+</script>ive="{{active}}"
           token="{{token}}"
           status-known="{{statusKnown}}"
           last-message="{{lastMessage}}"
@@ -111,15 +107,25 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
 
       app.requestMessaging = function() {
         return this.$.messaging.requestPermission();
-      }
+    <script type="module">
+import '../firebase-messaging.js';
+import { PolymerElement } from '@polymer/polymer/polymer-element.js';
+var app = document.getElementById('app');
 
-      app.json = function(val) {
-        return JSON.stringify(val || null, null, 2);
-      }
+// Polymer 2.0 compat
+if (PolymerElement) {
+  app = app.parentNode;
+}
 
-      app.logit = function(e) {
-        this.$.log.innerHTML = JSON.stringify(e.detail.message) + "\n" + app.$.log.innerHTML;
-      }
-    </script>
-  </body>
-</html>
+app.requestMessaging = function() {
+  return this.$.messaging.requestPermission();
+}
+
+app.json = function(val) {
+  return JSON.stringify(val || null, null, 2);
+}
+
+app.logit = function(e) {
+  this.$.log.innerHTML = JSON.stringify(e.detail.message) + "\n" + app.$.log.innerHTML;
+}
+</script>

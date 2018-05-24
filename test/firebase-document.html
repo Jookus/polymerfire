@@ -16,10 +16,9 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
 
-  <link rel="import" href="../polymerfire.html">
-  <link rel="import" href="../../app-storage/test/app-storage-compatibility-suite.html">
-  <link rel="import" href="../firebase-app.html">
-  <link rel="import" href="../firebase-document.html">
+<script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>type="module" src="../../@polymer/app-storage/test/app-storage-compatibility-suite.js"></script>
+  <script type="module" src="../firebase-app.js"></script>
+  <script type="module" src="../firebase-document.js"></script>
 </head>
 <body>
 
@@ -50,75 +49,82 @@ https://github.com/firebase/polymerfire/blob/master/LICENSE
         awaitUpdate: function(element) {
           return new Promise(function(resolve) {
             element.ref.on('value', function onValue() {
-              element.ref.off('value', onValue);
-              Polymer.Base.async(resolve, 1);
-            });
-          });
-        },
-        fetchStoredValue: window.foo = function(storagePath) {
-          return new Promise(function(resolve) {
-            var ref = firebase.app('test').database().ref(storagePath);
-            ref.on('value', function(snapshot) {
-              ref.off('value');
-              resolve(snapshot.val());
-            });
-          });
-        }
+  <script type="module">
+import '../polymerfire.js';
+import '@polymer/app-storage/test/app-storage-compatibility-suite.js';
+import '../firebase-app.js';
+import '../firebase-document.js';
+import { Base } from '@polymer/polymer/polymer-legacy.js';
+testAppStorageDocumentCompatibility({
+  tagName: 'firebase-document',
+  awaitUpdate: function(element) {
+    return new Promise(function(resolve) {
+      element.ref.on('value', function onValue() {
+        element.ref.off('value', onValue);
+        Base.async(resolve, 1);
       });
-
-     function pushFirebaseValue(path, value) {
-       return firebase.app('test').database().ref(path).push(value);
-      }
-
-      function clearFirebaseValue(path) {
-        return firebase.app('test').database().ref(path).set(null);
-      }
-
-      var makeObject;
-      var root;
-
-      setup(function() {
-        var objectId = 0;
-        makeObject = function(value) {
-          return {
-            val: value || objectId++
-          };
-        };
-
-        return pushFirebaseValue('/test', { ignore: 'me' }).then(function(snapshot) {
-          root = '/test/' + snapshot.key;
-        });
-      });
-
-      suite('exists attribute', function() {
-         var query;
-
-        setup(function() {
-          query = fixture('BasicStorage');
-          query.path = root + '/list';
-          return query.transactionsComplete;
-        });
-
-        test('exists is null when we change the path', function() {
-          query.path = '/myNewPath';
-          expect(query.exists).to.be.equal(null);
-        });
-
-        test('exists is true when we have data false when we remove it.', function() {
-          var object = makeObject();
-
-          return pushFirebaseValue(query.path, object).then(function() {
-            expect(query.exists).to.be.equal(true);
-          }).then(function(){
-            clearFirebaseValue(query.path);
-          }).then(function() {
-            expect(query.exists).to.be.equal(false);
-          });
-        });
-        
-      });
-
     });
-  </script>
-</body>
-</html>
+  },
+  fetchStoredValue: window.foo = function(storagePath) {
+    return new Promise(function(resolve) {
+      var ref = firebase.app('test').database().ref(storagePath);
+      ref.on('value', function(snapshot) {
+        ref.off('value');
+        resolve(snapshot.val());
+      });
+    });
+  }
+});
+
+function pushFirebaseValue(path, value) {
+  return firebase.app('test').database().ref(path).push(value);
+ }
+
+function clearFirebaseValue(path) {
+  return firebase.app('test').database().ref(path).set(null);
+}
+
+var makeObject;
+var root;
+
+setup(function() {
+  var objectId = 0;
+  makeObject = function(value) {
+    return {
+      val: value || objectId++
+    };
+  };
+
+  return pushFirebaseValue('/test', { ignore: 'me' }).then(function(snapshot) {
+    root = '/test/' + snapshot.key;
+  });
+});
+
+suite('exists attribute', function() {
+   var query;
+
+  setup(function() {
+    query = fixture('BasicStorage');
+    query.path = root + '/list';
+    return query.transactionsComplete;
+  });
+
+  test('exists is null when we change the path', function() {
+    query.path = '/myNewPath';
+    expect(query.exists).to.be.equal(null);
+  });
+
+  test('exists is true when we have data false when we remove it.', function() {
+    var object = makeObject();
+
+    return pushFirebaseValue(query.path, object).then(function() {
+      expect(query.exists).to.be.equal(true);
+    }).then(function(){
+      clearFirebaseValue(query.path);
+    }).then(function() {
+      expect(query.exists).to.be.equal(false);
+    });
+  });
+  
+});
+</script>
