@@ -3,4 +3,4 @@ bower-*.json
 /polymerfire.iml
 /.idea/
 
-node_modules
+/node_modules/
