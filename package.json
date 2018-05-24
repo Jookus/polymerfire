@@ -6,7 +6,12 @@
     "firebase"
   ],
   "homepage": "https://github.com/firebase/polymerfire",
-  "name": "jookus/polymerfire",
+  "name": "Jookus/polymerfire",
+  "flat": true,
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/Jookus/polymerfire"
+  },
   "version": "3.0.1",
   "resolutions": {
     "inherits": "2.0.3",

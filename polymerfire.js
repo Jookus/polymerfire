@@ -14,9 +14,3 @@ Use of this source code is governed by a BSD-style
 license that can be found in the LICENSE file or at
 https://github.com/firebase/polymerfire/blob/master/LICENSE
 */
-/*
-  FIXME(polymer-modulizer): the above comments were extracted
-  from HTML and may be out of place here. Review them and
-  then delete this comment!
-*/
-;
